@@ -1,0 +1,51 @@
+spring:
+  application:
+    name: claude-spring-starterkit
+
+  # Virtual Thread 활성화: WebFlux 없이 높은 동시성을 얻는다.
+  threads:
+    virtual:
+      enabled: true
+
+  jpa:
+    open-in-view: false          # OSIV 끄기 - 커넥션 점유 시간을 Service 범위로 제한
+    hibernate:
+      ddl-auto: validate         # 스키마 변경은 Flyway가 전담
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          batch_size: 50
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+
+  jackson:
+    default-property-inclusion: non_null   # null 필드는 응답에서 제외
+    deserialization:
+      fail-on-unknown-properties: false
+
+  datasource:
+    hikari:
+      maximum-pool-size: 20
+      connection-timeout: 3000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+
+logging:
+  level:
+    com.example.starterkit: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE   # 바인딩 파라미터 확인용 (운영에서는 제거)

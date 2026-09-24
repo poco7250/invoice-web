@@ -1,0 +1,13 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+  docker:
+    compose:
+      enabled: false   # 테스트는 Testcontainers가 DB를 띄운다
+
+logging:
+  level:
+    org.hibernate.orm.jdbc.bind: INFO

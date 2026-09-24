@@ -1,0 +1,30 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+
+# OS
+.DS_Store
+
+# 로그 / 환경
+*.log
+.env
+
+# IDE 빌드 산출물 (VS Code Java / Eclipse)
+bin/
+out/
+
+# Claude Code 개인 설정
+.claude/settings.local.json
+
+# Java 프로젝트에 불필요한 npm 산출물
+package-lock.json
+node_modules/

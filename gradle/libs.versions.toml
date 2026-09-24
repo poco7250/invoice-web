@@ -1,0 +1,19 @@
+# 버전 카탈로그
+# Spring Boot BOM이 관리하는 의존성(Hibernate, Flyway, Testcontainers, PostgreSQL 드라이버,
+# JUnit, AssertJ, Lombok 등)은 여기에 적지 않는다. BOM이 검증한 조합을 그대로 쓰기 위함.
+[versions]
+springBoot = "4.1.1"
+springDependencyManagement = "1.1.7"
+springdoc = "3.1.1"
+mapstruct = "1.6.3"
+lombokMapstructBinding = "0.2.0"
+
+[libraries]
+springdoc-webmvc-ui = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc" }
+mapstruct = { module = "org.mapstruct:mapstruct", version.ref = "mapstruct" }
+mapstruct-processor = { module = "org.mapstruct:mapstruct-processor", version.ref = "mapstruct" }
+lombok-mapstruct-binding = { module = "org.projectlombok:lombok-mapstruct-binding", version.ref = "lombokMapstructBinding" }
+
+[plugins]
+spring-boot = { id = "org.springframework.boot", version.ref = "springBoot" }
+spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "springDependencyManagement" }
