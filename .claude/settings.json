@@ -7,7 +7,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "command -v osascript >/dev/null 2>&1 && osascript -e 'display notification \"작업 완료\" with title \"claude-spring-starterkit\"' || true",
+            "command": "command -v osascript >/dev/null 2>&1 && osascript -e 'display notification \"작업 완료\" with title \"notion-folio\"' || true",
             "timeout": 5
           }
         ]

@@ -1,12 +1,12 @@
-package com.example.starterkit.global.response;
+package com.poco7250.notionfolio.global.response;
 
-import com.example.starterkit.global.exception.ErrorCode;
+import com.poco7250.notionfolio.global.exception.ErrorCode;
 import java.util.List;
 
 /**
  * 오류 응답 본문.
  *
- * @param code       클라이언트가 분기에 쓰는 오류 코드 (예: USER_NOT_FOUND)
+ * @param code       클라이언트가 분기에 쓰는 오류 코드 (예: INVALID_INPUT)
  * @param message    사람이 읽는 오류 메시지
  * @param violations 필드 단위 검증 실패 목록 (없으면 null)
  */

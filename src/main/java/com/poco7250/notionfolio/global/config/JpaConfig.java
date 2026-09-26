@@ -1,4 +1,4 @@
-package com.example.starterkit.global.config;
+package com.poco7250.notionfolio.global.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;

@@ -1,4 +1,4 @@
-package com.example.starterkit.global.exception;
+package com.poco7250.notionfolio.global.exception;
 
 import lombok.Getter;
 

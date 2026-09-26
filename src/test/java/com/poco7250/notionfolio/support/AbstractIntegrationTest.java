@@ -1,4 +1,4 @@
-package com.example.starterkit.support;
+package com.poco7250.notionfolio.support;
 
 import org.junit.jupiter.api.Tag;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,6 +1,6 @@
 spring:
   application:
-    name: claude-spring-starterkit
+    name: notion-folio
 
   # Virtual Thread 활성화: WebFlux 없이 높은 동시성을 얻는다.
   threads:
@@ -31,6 +31,21 @@ spring:
       maximum-pool-size: 20
       connection-timeout: 3000
 
+# Notion 연동. 비밀값은 환경변수로만 주입한다.
+notion:
+  token: ${NOTION_TOKEN:}
+  version: ${NOTION_VERSION:2026-03-11}   # PRD 가정값. Task 006(D-4)에서 최신 문서로 재확인
+  projects-data-source-id: ${NOTION_PROJECTS_DATA_SOURCE_ID:}
+  about-page-id: ${NOTION_ABOUT_PAGE_ID:}
+
+admin:
+  api-key: ${ADMIN_API_KEY:}
+
+sync:
+  scheduler:
+    enabled: ${SYNC_SCHEDULER_ENABLED:true}
+  fixed-delay: 30m
+
 management:
   endpoints:
     web:
@@ -47,5 +62,5 @@ springdoc:
 
 logging:
   level:
-    com.example.starterkit: DEBUG
+    com.poco7250.notionfolio: DEBUG
     org.hibernate.orm.jdbc.bind: TRACE   # 바인딩 파라미터 확인용 (운영에서는 제거)

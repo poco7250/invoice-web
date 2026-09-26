@@ -1,4 +1,4 @@
-package com.example.starterkit.global.entity;
+package com.poco7250.notionfolio.global.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

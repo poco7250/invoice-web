@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.spring.dependency.management)
 }
 
-group = "com.example"
+group = "com.poco7250"
 version = "0.0.1-SNAPSHOT"
 
 java {
@@ -32,6 +32,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-flyway")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    // Notion API 호출용 RestClient (Boot 4부터 전용 스타터로 분리)
+    implementation("org.springframework.boot:spring-boot-starter-restclient")
 
     // --- API 문서 ---
     implementation(libs.springdoc.webmvc.ui)
@@ -49,6 +51,8 @@ dependencies {
 
     // --- 런타임 ---
     runtimeOnly("org.postgresql:postgresql")
+    // Flyway 10+는 DB별 지원이 모듈로 분리됐다. 빠지면 "Unsupported Database: PostgreSQL"로 기동 실패
+    runtimeOnly("org.flywaydb:flyway-database-postgresql")
 
     // --- 로컬 개발 ---
     developmentOnly("org.springframework.boot:spring-boot-devtools")
@@ -57,6 +61,8 @@ dependencies {
 
     // --- 테스트 ---
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+    // MockRestServiceServer 기반 Notion 클라이언트 테스트
+    testImplementation("org.springframework.boot:spring-boot-starter-restclient-test")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     // Testcontainers 2.x부터 모듈 아티팩트에 testcontainers- 접두사가 붙었다.
     testImplementation("org.testcontainers:testcontainers-junit-jupiter")

@@ -8,6 +8,20 @@ spring:
     compose:
       enabled: false   # 테스트는 Testcontainers가 DB를 띄운다
 
+# 테스트용 더미값. 실제 Notion을 호출하지 않는다.
+notion:
+  token: test-notion-token
+  version: "2026-03-11"
+  projects-data-source-id: test-data-source-id
+  about-page-id: test-about-page-id
+
+admin:
+  api-key: test-admin-key
+
+sync:
+  scheduler:
+    enabled: false
+
 logging:
   level:
     org.hibernate.orm.jdbc.bind: INFO

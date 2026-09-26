@@ -1,4 +1,4 @@
-package com.example.starterkit.global.response;
+package com.poco7250.notionfolio.global.response;
 
 /**
  * 모든 API의 공통 응답 래퍼.

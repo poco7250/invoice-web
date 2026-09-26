@@ -5,10 +5,10 @@
       "name": "T1 패키지 리네임과 샘플 user 도메인 제거",
       "description": "D-6 사용자 결정(com.poco7250.notionfolio)과 D-5 기본안(a)을 반영한다. src/main, src/test의 com/example/starterkit을 com/poco7250/notionfolio로 git mv하고 package/import를 일괄 치환한다. 메인 클래스를 NotionFolioApplication으로 바꾼다. domain/user 전체, UserTest, UserApiIntegrationTest, V1__create_users.sql, ErrorCode의 USER_NOT_FOUND/DUPLICATE_EMAIL을 삭제한다. build.gradle.kts group=com.poco7250, settings.gradle.kts rootProject.name=notion-folio, application.yml spring.application.name=notion-folio와 logging.level 키, OpenApiConfig(빈명 notionFolioOpenApi, 제목 Notion Folio API, 한국어 설명), .claude/settings.json 알림 제목을 바꾼다. db/migration에는 .gitkeep을 둔다. .gitignore 대상인 bin/ 산출물은 삭제한다.",
       "notes": "compose.yaml의 DB명 starterkit은 기능 영향이 없어 유지한다. 기존 로컬 볼륨에 users 테이블 이력이 남아 있으면 docker compose down -v로 초기화하라고 안내한다.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [],
       "createdAt": "2026-09-25T12:05:16.819Z",
-      "updatedAt": "2026-09-25T12:05:16.819Z",
+      "updatedAt": "2026-09-26T05:22:20.984Z",
       "relatedFiles": [
         {
           "path": "src/main/java/com/example/starterkit",
@@ -53,21 +53,23 @@
       ],
       "implementationGuide": "1) git mv src/main/java/com/example/starterkit -> src/main/java/com/poco7250/notionfolio (test도 동일)\n2) grep -rl com.example.starterkit src | xargs sed -i '' 's/com.example.starterkit/com.poco7250.notionfolio/g'\n3) StarterKitApplication -> NotionFolioApplication (git mv + 클래스명)\n4) git rm domain/user, 테스트 2개, V1__create_users.sql; ErrorCode 사용자 구역 삭제\n5) 이름 관련 설정 파일 수정, rm -rf bin\n6) grep -r 'starterkit\\|StarterKit' src build.gradle.kts settings.gradle.kts .claude/settings.json 로 잔존 확인 (compose.yaml DB명은 유지)",
       "verificationCriteria": "./gradlew compileJava compileTestJava 성공. src와 빌드 스크립트에서 com.example.starterkit, StarterKit, User 관련 참조 grep 결과 0건.",
-      "analysisResult": "ROADMAP Task 001: 스타터 킷을 Notion Folio(패키지 com.poco7250.notionfolio, 앱 이름 notion-folio)로 정리하고 공통 인프라(설정 프로퍼티, ErrorCode, 예외 핸들러, restclient 의존성, 스모크/404 테스트, /tasks 작업 파일)를 세팅한다. CLAUDE.md 규칙(ErrorCode enum, ApiResponse 포맷, record, BOM 의존성 버전 미기재, 한국어 Javadoc, 30줄 이하 메서드)을 지키고, Docker 설치 후 SKIPPED 0과 Playwright E2E까지 확인해야 완료다."
+      "analysisResult": "ROADMAP Task 001: 스타터 킷을 Notion Folio(패키지 com.poco7250.notionfolio, 앱 이름 notion-folio)로 정리하고 공통 인프라(설정 프로퍼티, ErrorCode, 예외 핸들러, restclient 의존성, 스모크/404 테스트, /tasks 작업 파일)를 세팅한다. CLAUDE.md 규칙(ErrorCode enum, ApiResponse 포맷, record, BOM 의존성 버전 미기재, 한국어 Javadoc, 30줄 이하 메서드)을 지키고, Docker 설치 후 SKIPPED 0과 Playwright E2E까지 확인해야 완료다.",
+      "summary": "패키지를 com.example.starterkit에서 com.poco7250.notionfolio로 git mv하고 package/import를 일괄 치환했다. 메인 클래스는 NotionFolioApplication으로 바꿨다. domain/user(main 9개, test 2개), V1__create_users.sql, ErrorCode의 USER_NOT_FOUND/DUPLICATE_EMAIL을 삭제하고 db/migration/.gitkeep을 추가했다. group, rootProject.name, spring.application.name, logging 키, OpenApiConfig(notionFolioOpenApi, Notion Folio API), .claude/settings.json 알림 제목을 변경했고 bin/을 삭제했다. ErrorDetail Javadoc 예시도 INVALID_INPUT으로 바꿨다. compileJava/compileTestJava 성공, 잔존 참조 grep 0건. 컨텍스트 기동 검증은 T4 범위다.",
+      "completedAt": "2026-09-26T05:22:20.980Z"
     },
     {
       "id": "a71892ed-9802-41c8-a763-c1ae334c9811",
       "name": "T2 ErrorCode 추가와 GlobalExceptionHandler 보강",
       "description": "ErrorCode에 공통 RESOURCE_NOT_FOUND(404)와 PRD 8개(PROJECT_NOT_FOUND 404, PROFILE_NOT_FOUND 404, IMAGE_NOT_FOUND 404, NOTION_UNAVAILABLE 502, NOTION_RATE_LIMITED 503, INVALID_WEBHOOK_SIGNATURE 401, INVALID_ADMIN_KEY 401, SYNC_ALREADY_RUNNING 409)를 도메인별 주석 구역으로 추가한다. GlobalExceptionHandler에 Exception 핸들러보다 위에 NoResourceFoundException->RESOURCE_NOT_FOUND, MissingRequestHeaderException->INVALID_INPUT(헤더명 포함 메시지), MethodArgumentTypeMismatchException->INVALID_INPUT(파라미터명만 포함, 입력값 반사 금지), HttpRequestMethodNotSupportedException->METHOD_NOT_ALLOWED 핸들러를 추가한다.",
       "notes": "새 예외 클래스를 만들지 않는다. ErrorDetail.of(ErrorCode, String) 재사용.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "1415eafa-b036-4f99-a2c9-a9b9c0ea04f6"
         }
       ],
       "createdAt": "2026-09-25T12:05:16.819Z",
-      "updatedAt": "2026-09-25T12:05:16.819Z",
+      "updatedAt": "2026-09-26T05:23:48.344Z",
       "relatedFiles": [
         {
           "path": "src/main/java/com/poco7250/notionfolio/global/exception/ErrorCode.java",
@@ -87,21 +89,23 @@
       ],
       "implementationGuide": "private ResponseEntity<ApiResponse<Void>> toResponse(ErrorCode code, ErrorDetail detail) 헬퍼로 status+body 생성 중복 제거, 기존 handleBusiness/handleValidation/handleUnexpected도 헬퍼 사용.\n각 핸들러: 한국어 Javadoc 1줄, log.warn(\"키={}\") 형식. NoResourceFoundException은 스캐너 노이즈라 log.debug.\n메시지 예: \"필수 헤더가 없습니다: header=X-Admin-Key\", \"파라미터 타입이 올바르지 않습니다: param=page\"",
       "verificationCriteria": "컴파일 성공, ErrorCode가 PRD ErrorCode 표와 이름/HTTP 상태 일치, 모든 핸들러 메서드 30줄 이하, Exception 핸들러가 마지막에 위치.",
-      "analysisResult": "ROADMAP Task 001: 스타터 킷을 Notion Folio(패키지 com.poco7250.notionfolio, 앱 이름 notion-folio)로 정리하고 공통 인프라(설정 프로퍼티, ErrorCode, 예외 핸들러, restclient 의존성, 스모크/404 테스트, /tasks 작업 파일)를 세팅한다. CLAUDE.md 규칙(ErrorCode enum, ApiResponse 포맷, record, BOM 의존성 버전 미기재, 한국어 Javadoc, 30줄 이하 메서드)을 지키고, Docker 설치 후 SKIPPED 0과 Playwright E2E까지 확인해야 완료다."
+      "analysisResult": "ROADMAP Task 001: 스타터 킷을 Notion Folio(패키지 com.poco7250.notionfolio, 앱 이름 notion-folio)로 정리하고 공통 인프라(설정 프로퍼티, ErrorCode, 예외 핸들러, restclient 의존성, 스모크/404 테스트, /tasks 작업 파일)를 세팅한다. CLAUDE.md 규칙(ErrorCode enum, ApiResponse 포맷, record, BOM 의존성 버전 미기재, 한국어 Javadoc, 30줄 이하 메서드)을 지키고, Docker 설치 후 SKIPPED 0과 Playwright E2E까지 확인해야 완료다.",
+      "summary": "ErrorCode에 공통 RESOURCE_NOT_FOUND(404)와 PRD 8개(PROJECT/PROFILE/IMAGE_NOT_FOUND 404, NOTION_UNAVAILABLE 502, NOTION_RATE_LIMITED 503, INVALID_WEBHOOK_SIGNATURE 401, INVALID_ADMIN_KEY 401, SYNC_ALREADY_RUNNING 409)를 도메인별 주석 구역으로 추가했다. GlobalExceptionHandler에 NoResourceFoundException(DEBUG 로그), MissingRequestHeaderException(헤더명 메시지), MethodArgumentTypeMismatchException(파라미터명만, 입력값 반사 없음), HttpRequestMethodNotSupportedException 핸들러를 Exception 핸들러 위에 추가했다. toResponse 헬퍼로 기존 핸들러의 응답 생성 중복도 제거했다. 컴파일 성공, 모든 메서드 30줄 이하.",
+      "completedAt": "2026-09-26T05:23:48.343Z"
     },
     {
       "id": "7e7578df-4129-46de-8e03-ec3dfad69cab",
       "name": "T3 설정 프로퍼티 record와 restclient 의존성 추가",
       "description": "@ConfigurationProperties record 3개를 정의한다. global/notion/NotionProperties(prefix notion: token, version, projectsDataSourceId, aboutPageId, baseUrl, connectTimeout, readTimeout, maxAttempts, maxBackoff, requestsPerSecond), global/admin/AdminProperties(prefix admin: apiKey), domain/sync/SyncProperties(prefix sync: scheduler.enabled, fixedDelay). compact constructor에서 null이면 기본값(baseUrl https://api.notion.com/v1, connectTimeout 5s, readTimeout 30s, maxAttempts 6, maxBackoff 30s, requestsPerSecond 3, fixedDelay 30m, scheduler.enabled true)을 채운다. 메인 클래스에 @ConfigurationPropertiesScan. main application.yml에 ${NOTION_TOKEN:} 등 환경변수 플레이스홀더, 테스트 application.yml에 더미값과 sync.scheduler.enabled=false. build.gradle.kts에 spring-boot-starter-restclient(implementation), spring-boot-starter-restclient-test(testImplementation)를 버전 없이 추가(4.1.1 아티팩트 존재 확인됨).",
       "notes": "비밀값 실값을 yml/코드/테스트에 기록하지 않는다. 필드명은 Task 006/009가 그대로 쓰는 계약이므로 ROADMAP 표기와 맞춘다.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "1415eafa-b036-4f99-a2c9-a9b9c0ea04f6"
         }
       ],
       "createdAt": "2026-09-25T12:05:16.819Z",
-      "updatedAt": "2026-09-25T12:05:16.819Z",
+      "updatedAt": "2026-09-26T05:24:42.207Z",
       "relatedFiles": [
         {
           "path": "src/main/java/com/poco7250/notionfolio/global/notion/NotionProperties.java",
@@ -136,14 +140,16 @@
       ],
       "implementationGuide": "record NotionProperties(String token, String version, ..., Duration maxBackoff, Integer requestsPerSecond) { NotionProperties { if (baseUrl == null) baseUrl = DEFAULT_BASE_URL; ... } }\nSyncProperties(Scheduler scheduler, Duration fixedDelay) + 중첩 record Scheduler(Boolean enabled).\nNOTION_VERSION 기본값은 PRD 가정값 2026-03-11을 yml 플레이스홀더 기본값으로 두되 Task 006(D-4)에서 재확인한다고 주석.\n비밀값에 @NotBlank를 걸지 않는다(환경변수 없이도 bootRun/E2E 가능해야 함, 사용 시점 검증은 Task 006).",
       "verificationCriteria": "./gradlew compileJava 성공, build.gradle.kts의 restclient 의존성에 버전 문자열 없음, application.yml에 실제 비밀값 없음.",
-      "analysisResult": "ROADMAP Task 001: 스타터 킷을 Notion Folio(패키지 com.poco7250.notionfolio, 앱 이름 notion-folio)로 정리하고 공통 인프라(설정 프로퍼티, ErrorCode, 예외 핸들러, restclient 의존성, 스모크/404 테스트, /tasks 작업 파일)를 세팅한다. CLAUDE.md 규칙(ErrorCode enum, ApiResponse 포맷, record, BOM 의존성 버전 미기재, 한국어 Javadoc, 30줄 이하 메서드)을 지키고, Docker 설치 후 SKIPPED 0과 Playwright E2E까지 확인해야 완료다."
+      "analysisResult": "ROADMAP Task 001: 스타터 킷을 Notion Folio(패키지 com.poco7250.notionfolio, 앱 이름 notion-folio)로 정리하고 공통 인프라(설정 프로퍼티, ErrorCode, 예외 핸들러, restclient 의존성, 스모크/404 테스트, /tasks 작업 파일)를 세팅한다. CLAUDE.md 규칙(ErrorCode enum, ApiResponse 포맷, record, BOM 의존성 버전 미기재, 한국어 Javadoc, 30줄 이하 메서드)을 지키고, Docker 설치 후 SKIPPED 0과 Playwright E2E까지 확인해야 완료다.",
+      "summary": "NotionProperties(prefix notion, 10개 필드), AdminProperties(prefix admin, apiKey), SyncProperties(prefix sync, 중첩 Scheduler.enabled + fixedDelay) record를 만들고 compact constructor에서 기본값(baseUrl, 타임아웃 5s/30s, maxAttempts 6, maxBackoff 30s, requestsPerSecond 3, fixedDelay 30m, scheduler.enabled true)을 채운다. 메인 클래스에 @ConfigurationPropertiesScan. main yml은 환경변수 플레이스홀더(빈 기본값, NOTION_VERSION 기본 2026-03-11은 D-4 재확인 주석), test yml은 더미값과 scheduler.enabled=false(version은 날짜 해석 방지를 위해 따옴표). restclient/restclient-test 스타터를 버전 없이 추가(Maven Central 4.1.1 확인). compileJava 성공, 비밀값 실값 없음.",
+      "completedAt": "2026-09-26T05:24:42.206Z"
     },
     {
       "id": "b995046b-e1b7-477e-9a3b-245d6430fe45",
       "name": "T4 컨텍스트 기동과 공통 에러 응답 통합 테스트 작성",
       "description": "AbstractIntegrationTest를 상속하는 테스트를 작성한다. ApplicationContextSmokeTest: 컨텍스트 기동(Flyway 마이그레이션 0개 상태 포함), NotionProperties/SyncProperties/AdminProperties가 테스트 yml 더미값과 기본값으로 바인딩되는지 확인, sync.scheduler.enabled=false 확인. GlobalExceptionHandlerIntegrationTest: GET /api/unknown -> 404 + success=false + error.code=RESOURCE_NOT_FOUND, GET /api/users -> 404(샘플 제거 확인), 허용되지 않은 메서드 -> 405 METHOD_NOT_ALLOWED, 헤더 누락 -> 400 INVALID_INPUT, 타입 불일치 -> 400 INVALID_INPUT. 헤더/타입 케이스는 src/test에 테스트 전용 @RestController를 두어 검증한다. 프로퍼티 기본값 채움은 컨텍스트 없는 단위 테스트로 추가한다.",
       "notes": "jackson default-property-inclusion=non_null 때문에 실패 응답에 data 키가 없다. ROADMAP 표기(data: null)와 다르므로 작업 파일에 결정 필요 메모로 남기고 정책 변경은 하지 않는다. Docker 없이 실행하면 SKIPPED로 빠진다.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "a71892ed-9802-41c8-a763-c1ae334c9811"
@@ -153,7 +159,7 @@
         }
       ],
       "createdAt": "2026-09-25T12:05:16.819Z",
-      "updatedAt": "2026-09-25T12:05:16.819Z",
+      "updatedAt": "2026-09-26T05:26:30.990Z",
       "relatedFiles": [
         {
           "path": "src/test/java/com/poco7250/notionfolio/support/AbstractIntegrationTest.java",
@@ -178,21 +184,23 @@
       ],
       "implementationGuide": "@DisplayName 한국어 문장. mockMvc.perform(get(\"/api/unknown\")).andExpect(status().isNotFound()).andExpect(jsonPath(\"$.success\").value(false)).andExpect(jsonPath(\"$.error.code\").value(\"RESOURCE_NOT_FOUND\")).andExpect(jsonPath(\"$.data\").doesNotExist())\n테스트 전용 컨트롤러: @RestController @RequestMapping(\"/test/errors\") - @GetMapping(\"/header\") @RequestHeader(\"X-Test\"), @GetMapping(\"/type\") @RequestParam int value. 테스트 패키지에 두어 운영 빌드에 포함되지 않게 한다.",
       "verificationCriteria": "./gradlew compileTestJava 성공, 단위 테스트 PASSED. 통합 테스트 PASSED 여부는 T6에서 Docker로 확인.",
-      "analysisResult": "ROADMAP Task 001: 스타터 킷을 Notion Folio(패키지 com.poco7250.notionfolio, 앱 이름 notion-folio)로 정리하고 공통 인프라(설정 프로퍼티, ErrorCode, 예외 핸들러, restclient 의존성, 스모크/404 테스트, /tasks 작업 파일)를 세팅한다. CLAUDE.md 규칙(ErrorCode enum, ApiResponse 포맷, record, BOM 의존성 버전 미기재, 한국어 Javadoc, 30줄 이하 메서드)을 지키고, Docker 설치 후 SKIPPED 0과 Playwright E2E까지 확인해야 완료다."
+      "analysisResult": "ROADMAP Task 001: 스타터 킷을 Notion Folio(패키지 com.poco7250.notionfolio, 앱 이름 notion-folio)로 정리하고 공통 인프라(설정 프로퍼티, ErrorCode, 예외 핸들러, restclient 의존성, 스모크/404 테스트, /tasks 작업 파일)를 세팅한다. CLAUDE.md 규칙(ErrorCode enum, ApiResponse 포맷, record, BOM 의존성 버전 미기재, 한국어 Javadoc, 30줄 이하 메서드)을 지키고, Docker 설치 후 SKIPPED 0과 Playwright E2E까지 확인해야 완료다.",
+      "summary": "ApplicationContextSmokeTest(컨텍스트 기동 + 마이그레이션 0개 + 프로퍼티 바인딩 + 스케줄러 off), GlobalExceptionHandlerIntegrationTest(없는 경로 404, 제거된 /api/users·/api/v1/users 404, 405, 헤더 누락 400, 타입 불일치 400 + 입력값 미반사), 테스트 전용 ErrorTestController, NotionPropertiesTest/SyncPropertiesTest 단위 테스트를 작성했다. 실행 중 Flyway 12가 PostgreSQL 지원 모듈 없이 'Unsupported Database: PostgreSQL 18.6'으로 기동 실패하는 기존 결함을 발견해 BOM 관리 대상인 org.flywaydb:flyway-database-postgresql을 runtimeOnly로 버전 없이 추가했다. Testcontainers(Docker Desktop) 위에서 11개 전부 PASSED, SKIPPED 0.",
+      "completedAt": "2026-09-26T05:26:30.988Z"
     },
     {
       "id": "5e087ec8-b65b-4b77-969c-8be526a45d3c",
       "name": "T5 작업 파일과 프로젝트 문서 갱신",
       "description": "/tasks/000-sample.md(빈 체크박스, 변경 사항 요약 없음, 필수 섹션: 명세, 관련 파일, 수락 기준, 구현 단계, 테스트 체크리스트 8범주, E2E 검증)와 /tasks/001-setup.md(Task 001 명세, D-5/D-6 결정 기록, 테스트 체크리스트 8범주 검토 - 해당 없음은 사유, E2E 섹션과 결과 기록 표, Notion 준비 코드 외 작업 체크리스트, data 키 생략 메모)를 만든다. CLAUDE.md, shrimp-rules.md, ROADMAP 현재 상태 표의 패키지 경로/앱 이름 표기를 새 이름으로 갱신한다.",
       "notes": "README.md/PRD_PROMPT.md는 이전 기획 문서라 이번 범위에서 손대지 않는다(필요하면 사용자 확인).",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "1415eafa-b036-4f99-a2c9-a9b9c0ea04f6"
         }
       ],
       "createdAt": "2026-09-25T12:05:16.819Z",
-      "updatedAt": "2026-09-25T12:05:16.819Z",
+      "updatedAt": "2026-09-26T05:27:55.220Z",
       "relatedFiles": [
         {
           "path": "tasks/000-sample.md",
@@ -222,14 +230,16 @@
       ],
       "implementationGuide": "ROADMAP '개발 워크플로우 2. 작업 생성'과 'E2E 검증 형식' 블록을 그대로 따른다. ROADMAP의 Task 001 완료 표시(✅)는 T6 검증 뒤에만 한다.",
       "verificationCriteria": "두 작업 파일에 필수 섹션이 모두 있고, 테스트 체크리스트 8범주가 빠짐없이 검토됨. 문서에서 com.example.starterkit 표기 grep 0건(히스토리 설명 제외).",
-      "analysisResult": "ROADMAP Task 001: 스타터 킷을 Notion Folio(패키지 com.poco7250.notionfolio, 앱 이름 notion-folio)로 정리하고 공통 인프라(설정 프로퍼티, ErrorCode, 예외 핸들러, restclient 의존성, 스모크/404 테스트, /tasks 작업 파일)를 세팅한다. CLAUDE.md 규칙(ErrorCode enum, ApiResponse 포맷, record, BOM 의존성 버전 미기재, 한국어 Javadoc, 30줄 이하 메서드)을 지키고, Docker 설치 후 SKIPPED 0과 Playwright E2E까지 확인해야 완료다."
+      "analysisResult": "ROADMAP Task 001: 스타터 킷을 Notion Folio(패키지 com.poco7250.notionfolio, 앱 이름 notion-folio)로 정리하고 공통 인프라(설정 프로퍼티, ErrorCode, 예외 핸들러, restclient 의존성, 스모크/404 테스트, /tasks 작업 파일)를 세팅한다. CLAUDE.md 규칙(ErrorCode enum, ApiResponse 포맷, record, BOM 의존성 버전 미기재, 한국어 Javadoc, 30줄 이하 메서드)을 지키고, Docker 설치 후 SKIPPED 0과 Playwright E2E까지 확인해야 완료다.",
+      "summary": "/tasks/000-sample.md(빈 체크박스, 명세·관련 파일·수락 기준·구현 단계·테스트 체크리스트 8범주·E2E 섹션)와 /tasks/001-setup.md(D-5/D-6 결정 기록, 8범주 검토와 해당 없음 사유, Notion 준비 체크리스트, data 키 생략 결정 필요 메모, E2E 결과 기록 표)를 만들었다. CLAUDE.md(테스트 명령 예시, 루트 패키지, 엔티티 예시, restclient·Flyway PostgreSQL 모듈 함정 추가), shrimp-rules.md(현재 상태, 디렉토리 경로, 테스트 예시), ROADMAP 현재 상태 표와 /tasks 안내를 새 이름으로 갱신했다. 남은 com.example.starterkit 표기는 D-6 결정 이력 설명 2곳뿐. README는 범위 밖으로 유지.",
+      "completedAt": "2026-09-26T05:27:55.219Z"
     },
     {
       "id": "c7b0a4f2-84a3-41a0-8cab-bde060a50c9c",
       "name": "T6 Docker 준비 후 빌드·SKIPPED 0·E2E 검증과 결과 기록",
       "description": "사용자가 Docker(Docker Desktop 또는 OrbStack)를 설치/기동한 뒤 ./gradlew build를 실행하고 테스트 리포트에서 SKIPPED 0건, 통합 테스트 PASSED를 확인한다. 로컬 DB는 docker compose down -v로 초기화 후 ./gradlew bootRun. Playwright MCP로 /actuator/health UP, /swagger-ui.html 제목 Notion Folio API, /api/unknown 404 JSON(RESOURCE_NOT_FOUND), /api/users 404(미노출), Swagger에 user 엔드포인트 없음을 확인한다. 결과를 tasks/001-setup.md 결과 기록 표에 남기고, 모두 통과했을 때만 ROADMAP Task 001에 ✅와 See: /tasks/001-setup.md를 추가한다.",
       "notes": "Docker가 없으면 이 Task를 완료로 처리하지 않고 '미검증'으로 보고한다. Task 001 끝나면 멈추고 다음 지시를 기다린다. 커밋은 사용자가 요청할 때만.",
-      "status": "pending",
+      "status": "in_progress",
       "dependencies": [
         {
           "taskId": "b995046b-e1b7-477e-9a3b-245d6430fe45"
@@ -239,7 +249,7 @@
         }
       ],
       "createdAt": "2026-09-25T12:05:16.819Z",
-      "updatedAt": "2026-09-25T12:05:16.819Z",
+      "updatedAt": "2026-09-26T05:27:55.299Z",
       "relatedFiles": [
         {
           "path": "tasks/001-setup.md",

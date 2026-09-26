@@ -4,6 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Java 25 + Spring Boot 4.1.1 기반 레이어드 아키텍처 스타터 킷. 새 프로젝트의 베이스로 복제해서 쓰는 것이 목적이다.
 
+## Project Context
+
+- PRD 문서: @docs/PRD.md
+- 개발 로드맵: @docs/ROADMAP.md
+
 ## 명령어
 
 로컬에 JDK 25가 없어도 된다. Gradle 툴체인(foojay resolver)이 자동으로 받아온다. 로컬 `gradle` 설치도 불필요하며 항상 `./gradlew`를 쓴다.
@@ -12,8 +17,8 @@ Java 25 + Spring Boot 4.1.1 기반 레이어드 아키텍처 스타터 킷. 새 
 ./gradlew build                          # 컴파일 + 테스트 + bootJar
 ./gradlew bootRun                        # 실행 (compose.yaml의 PostgreSQL 자동 기동)
 ./gradlew test                           # 전체 테스트
-./gradlew test --tests '*UserTest'       # 단일 테스트 클래스
-./gradlew test --tests '*UserTest.changeName'   # 단일 테스트 메서드
+./gradlew test --tests '*NotionPropertiesTest'              # 단일 테스트 클래스
+./gradlew test --tests '*NotionPropertiesTest.fillDefaults' # 단일 테스트 메서드
 ```
 
 - http://localhost:8080/swagger-ui.html — API 문서
@@ -38,7 +43,7 @@ curl -s "https://api.adoptium.net/v3/info/available_releases"                   
 
 ## 아키텍처 규칙
 
-`global/`(공통 인프라)과 `domain/<도메인>/`(도메인별 레이어 묶음)으로 나뉜다. 새 도메인은 `domain/user`를 복사해 이름만 바꾸는 것을 전제로 설계됐다.
+`global/`(공통 인프라)과 `domain/<도메인>/`(도메인별 레이어 묶음)으로 나뉜다. 루트 패키지는 `com.poco7250.notionfolio`다. 도메인 하위 패키지는 `controller/ service/ repository/ entity/ dto/ mapper/`로 통일한다.
 
 **트랜잭션 경계는 Service에만 둔다.** 클래스에 `@Transactional(readOnly = true)`를 걸고 쓰기 메서드에만 `@Transactional`을 덮어쓴다. Controller나 Repository에는 절대 두지 않는다.
 
@@ -46,7 +51,7 @@ curl -s "https://api.adoptium.net/v3/info/available_releases"                   
 
 **새 오류는 `ErrorCode` enum에 추가한다.** HTTP 상태와 메시지를 enum에 같이 정의하므로, 새 예외 핸들러를 만들 필요 없이 `throw new BusinessException(ErrorCode.XXX)`로 끝난다.
 
-**엔티티에 setter를 만들지 않는다.** 생성은 정적 팩토리(`User.create()`), 변경은 의도가 드러나는 도메인 메서드(`user.changeName()`, `user.deactivate()`)로만 한다. Service에서 엔티티를 수정할 때는 변경 감지에 맡기고 `save()`를 호출하지 않는다.
+**엔티티에 setter를 만들지 않는다.** 생성은 정적 팩토리(`Project.create()`), 변경은 의도가 드러나는 도메인 메서드(`project.applyNotionSnapshot()`, `project.hide()`)로만 한다. Service에서 엔티티를 수정할 때는 변경 감지에 맡기고 `save()`를 호출하지 않는다.
 
 **스키마 변경은 Flyway 전용이다.** `ddl-auto: validate`라서 엔티티와 스키마가 어긋나면 기동 시점에 실패한다. 엔티티 필드를 추가/변경하면 반드시 `src/main/resources/db/migration/V{n}__{설명}.sql`도 같이 만든다.
 
@@ -65,6 +70,10 @@ curl -s "https://api.adoptium.net/v3/info/available_releases"                   
 - Flyway가 전용 스타터로 분리 → `spring-boot-starter-flyway`
 - `@AutoConfigureMockMvc` 패키지 이동 → `org.springframework.boot.webmvc.test.autoconfigure`
 - MVC 테스트 스타터 신설 → `spring-boot-starter-webmvc-test`
+- `RestClient`도 전용 스타터로 분리 → `spring-boot-starter-restclient`, 테스트는 `spring-boot-starter-restclient-test`
+
+**Flyway 10+**
+- DB별 지원이 모듈로 분리됐다 → `org.flywaydb:flyway-database-postgresql`(BOM 관리, `runtimeOnly`). 빠지면 컨텍스트 기동 시 `Unsupported Database: PostgreSQL 18.x`로 실패한다
 
 **Testcontainers 2.x**
 - 모듈 아티팩트에 접두사 추가 → `org.testcontainers:testcontainers-postgresql` (접두사 없는 `org.testcontainers:postgresql`은 1.21.4에서 멈춰 있어 2.x를 받지 못한다)

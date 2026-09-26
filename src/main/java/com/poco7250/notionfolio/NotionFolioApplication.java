@@ -1,12 +1,14 @@
-package com.example.starterkit;
+package com.poco7250.notionfolio;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 @SpringBootApplication
-public class StarterKitApplication {
+@ConfigurationPropertiesScan
+public class NotionFolioApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(StarterKitApplication.class, args);
+        SpringApplication.run(NotionFolioApplication.class, args);
     }
 }

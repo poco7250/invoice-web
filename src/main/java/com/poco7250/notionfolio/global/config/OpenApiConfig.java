@@ -1,4 +1,4 @@
-package com.example.starterkit.global.config;
+package com.poco7250.notionfolio.global.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -13,11 +13,11 @@ import org.springframework.context.annotation.Configuration;
 public class OpenApiConfig {
 
     @Bean
-    public OpenAPI starterKitOpenApi() {
+    public OpenAPI notionFolioOpenApi() {
         Info info = new Info()
-                .title("Spring Starter Kit API")
+                .title("Notion Folio API")
                 .version("v1")
-                .description("레이어드 아키텍처 기반 Spring Boot 스타터 킷");
+                .description("Notion을 CMS로 쓰는 백엔드 개발자 포트폴리오 API");
 
         return new OpenAPI().info(info);
     }
